@@ -24,9 +24,8 @@ We recommend using **CUDA 11.8** for compatibility with PyTorch 2.2 and related 
 
 - Step 1: Clone the repository
 ```
-git clone https://github.com/Atrovast/THGS.git
+git clone https://github.com/Atrovast/THGS.git --recursive
 cd THGS
-git submodule update --init --recursive
 ```
 
 - Step 2: Create new conda environment, and install dependencies
