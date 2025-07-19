@@ -1,0 +1,15 @@
+[submodule "submodules/simple-knn"]
+	path = submodules/simple-knn
+	url = https://gitlab.inria.fr/bkerbl/simple-knn.git
+[submodule "ext/spt/dependencies/parallel_cut_pursuit"]
+	path = ext/spt/dependencies/parallel_cut_pursuit
+	url = https://gitlab.com/1a7r0ch3/parallel-cut-pursuit.git
+[submodule "ext/spt/dependencies/grid_graph"]
+	path = ext/spt/dependencies/grid_graph
+	url = https://gitlab.com/1a7r0ch3/grid-graph.git
+[submodule "ext/spt/dependencies/FRNN"]
+	path = ext/spt/dependencies/FRNN
+	url = https://github.com/lxxue/FRNN.git
+[submodule "submodules/diff-surfel-rasterization"]
+	path = submodules/diff-surfel-rasterization
+	url = https://github.com/Atrovast/diff-surfel-rasterization.git

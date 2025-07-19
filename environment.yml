@@ -1,0 +1,55 @@
+name: thgs
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - plyfile=0.8.1
+  - python=3.10.13
+  - pip
+  - pytorch==2.2.0
+  - torchvision==0.17.0
+  - torchaudio==2.2.0
+  - pytorch-cuda=11.8
+  - tqdm
+  - einops
+  - numpy==1.26.4
+  - pip:
+    - trimesh
+    - kiui
+    - pymeshlab
+    - open3d
+    - scipy
+    - dearpygui
+    - omegaconf
+    - open_clip_torch
+    - transformations
+    - transformers
+    - yapf
+    - pycocotools
+    - mediapy
+    - lpips
+    - scikit-image
+    - submodules/diff-surfel-rasterization
+    - submodules/simple-knn
+    # below for spt dependencies
+    - ext/spt/dependencies/FRNN
+    - ext/spt/dependencies/FRNN/external/prefix_sum
+    - opencv-python==4.7.0.72
+    - git+https://github.com/facebookresearch/pytorch3d.git
+    - git+https://github.com/drprojects/point_geometric_features.git
+    - h5py
+    - colorhash
+    - seaborn
+    - pyrootutils
+    - hydra-core
+    - hydra-colorlog
+    - hydra-submitit-launcher
+    - numba
+    - torch_geometric==2.3.0
+    - pytorch-lightning
+    - rich
+    - ipyfilechooser
+    - natsort
+    - git+https://github.com/minghanqin/segment-anything-langsplat.git

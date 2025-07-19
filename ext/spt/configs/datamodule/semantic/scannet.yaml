@@ -1,0 +1,148 @@
+# @package datamodule
+defaults:
+  - /datamodule/semantic/default.yaml
+
+_target_: src.datamodules.scannet.ScanNetDataModule
+
+dataloader:
+    batch_size: 4
+
+# These parameters are not actually used by the DataModule, but are used
+# here to facilitate model parameterization with config interpolation
+num_classes: 20
+stuff_classes: [0, 1]
+trainval: False
+xy_tiling: null
+
+# Features that will be computed, saved, loaded for points and segments
+
+# point features used for the partition
+partition_hf:
+  - 'rgb'
+  # - 'linearity'
+  # - 'planarity'
+  # - 'semantic'
+  # - 'scattering'
+  # - 'verticality'
+  # - 'elevation'
+  - 'normal'
+
+# point features used for training
+point_hf:
+  # - 'linearity'
+  # - 'planarity'
+  # - 'scattering'
+  # - 'verticality'
+  # - 'elevation'
+  - 'rgb'
+
+# segment-wise features computed at preprocessing
+segment_base_hf: []
+
+# segment features computed as the mean of point feature in each
+# segment, saved with "mean_" prefix
+segment_mean_hf: []
+
+# segment features computed as the std of point feature in each segment,
+# saved with "std_" prefix
+segment_std_hf: []
+
+# horizontal edge features used for training
+edge_hf:
+  - 'mean_off'
+  - 'std_off'
+  - 'mean_dist'
+  - 'angle_source'
+  - 'angle_target'
+  - 'centroid_dir'
+  - 'centroid_dist'
+  - 'normal_angle'
+  - 'log_length'
+  - 'log_surface'
+  - 'log_volume'
+  - 'log_size'
+
+v_edge_hf: []  # vertical edge features used for training
+
+# Parameters declared here to facilitate tuning configs without copying
+# all the pre_transforms
+
+# Based on SPG: https://arxiv.org/pdf/1711.09869.pdf
+# voxel: 0.02
+knn: 10
+knn_r: 2
+knn_step: -1
+knn_min_search: 25
+### cut pursuit parameters
+# lerf
+# pcp_regularization: [0.1]
+# pcp_spatial_weight: [1e-2]
+# 3dovs
+pcp_regularization: [0.02]
+pcp_spatial_weight: [1e-1]
+# m360
+# pcp_regularization: [0.2]
+# pcp_spatial_weight: [2e-1]
+# pcp_regularization: [0.3]
+# pcp_spatial_weight: [1e-2]
+pcp_cutoff: [10]
+pcp_k_adjacency: 10
+pcp_w_adjacency: 1
+pcp_iterations: 15
+
+# Preprocessing
+cut_transform:
+    - transform: SaveNodeIndex #
+      params:
+        key: 'sub'
+    - transform: DataTo
+      params:
+        device: 'cuda'
+    - transform: AdjacencyGraph #
+      params:
+        k: ${datamodule.pcp_k_adjacency}
+        w: ${datamodule.pcp_w_adjacency}
+    - transform: ConnectIsolated
+      params:
+        k: 1
+    - transform: DataTo
+      params:
+        device: 'cpu'
+    - transform: AddKeysTo  # move some features to 'x' to be used for partition
+      params:
+        keys: ${datamodule.partition_hf}
+        to: 'x'
+        delete_after: False
+    - transform: CutPursuitPartition
+      params:
+        regularization: ${datamodule.pcp_regularization}
+        spatial_weight: ${datamodule.pcp_spatial_weight}
+        k_adjacency: ${datamodule.pcp_k_adjacency}
+        cutoff: ${datamodule.pcp_cutoff}
+        iterations: ${datamodule.pcp_iterations}
+        parallel: True
+        verbose: False
+
+knn_transform:
+    - transform: SaveNodeIndex #
+      params:
+        key: 'sub'
+    - transform: DataTo
+      params:
+        device: 'cuda'
+    - transform: KNN # compute knn graph, cuda
+      params:
+        k: ${datamodule.knn}
+        r_max: ${datamodule.knn_r}
+        verbose: False
+    - transform: DataTo
+      params:
+        device: 'cpu'
+    - transform: PointFeatures # add and convert point features, c++
+      params:
+        keys: ${datamodule.point_hf_preprocess}
+        k_min: 1
+        k_step: ${datamodule.knn_step}
+        k_min_search: ${datamodule.knn_min_search}
+        overwrite: False
+## end of pre_transform

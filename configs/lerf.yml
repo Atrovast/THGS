@@ -1,0 +1,26 @@
+# You can customize the configuration below to suit your specific dataset and experimental setup.
+dataset: 
+  # e.g. for scene 'figurines', data should be in `data/lerf-ovs/figurines`, and model would be saved in `output/lerf/figurines`
+  name: LERF-OVS
+  data_path: data/lerf-ovs
+  save_folder: lerf
+  scenes: ['figurines', 'ramen', 'teatime', 'waldo_kitchen']
+
+graph_weight:
+  tau: 0.85
+  neg_w: 0.1
+  pos_w: 0.02
+  neg_b: 25
+  pos_b: 25
+  zero_scale: 0.2
+  level: 1
+
+merge_proj:
+  thres_connect: 0.9,0.7,0.7  # lower threshold -> more merging -> less superpoint
+  thres_merge: 20
+  feat_assign: 2
+
+spt:
+  pcp_regularization: 0.1  # higher -> more regularization -> less superpoint
+  pcp_spatial_weight: 1e-1 # lower -> more spatial weight -> less superpoint
+  aligned_normal: True

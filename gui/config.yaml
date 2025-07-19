@@ -1,0 +1,23 @@
+# data loading
+source_path: /data/dsh/2dgs/data/teatime
+images: images/
+
+# model loading
+load: output/lerf/teatime/point_cloud/iteration_30000
+
+target_prompt: "sheep"
+
+# GUI settings
+H: 900
+W: 1200
+white_background: True
+
+# saving work space
+outdir: output/exp
+save_path: lerf
+
+# misc settings
+gui: True
+fovy: 60
+sh_degree: 3
+radius: 2

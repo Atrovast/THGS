@@ -1,0 +1,26 @@
+dataset: 
+  # e.g. for scene 'bed', data should be in `data/3DOVS/bed`, and model would be saved in `output/3dovs/bed`
+  name: 3DOVS
+  data_path: data/3DOVS
+  save_folder: 3dovs
+  scenes: ['bed', 'bench', 'lawn', 'room', 'sofa']
+
+graph_weight:
+  tau: 0.5
+  neg_w: 0.1
+  pos_w: 0.02
+  neg_b: 25
+  pos_b: 25
+  zero_scale: 1
+  level: 1
+
+merge_proj:
+  thres_connect: 0.9,0.7,0.7
+  thres_merge: 100
+  seg_enhance: True
+  feat_assign: 1
+
+spt:
+  pcp_regularization: 0.3
+  pcp_spatial_weight: 2e-1
+

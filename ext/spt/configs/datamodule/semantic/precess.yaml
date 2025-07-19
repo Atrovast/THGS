@@ -1,0 +1,57 @@
+# @package datamodule
+defaults:
+  - /datamodule/semantic/scannet.yaml
+
+_target_: src.datamodules.scannet.ScanNetDataModule
+
+
+# Preprocessing
+pre_transform:
+    - transform: SaveNodeIndex #
+      params:
+        key: 'sub'
+    - transform: DataTo
+      params:
+        device: 'cuda'
+    - transform: KNN # compute knn graph, cuda
+      params:
+        k: ${datamodule.knn}
+        r_max: ${datamodule.knn_r}
+        verbose: False
+    - transform: DataTo
+      params:
+        device: 'cpu'
+    - transform: PointFeatures # add and convert point features, c++
+      params:
+        keys: ${datamodule.point_hf_preprocess}
+        k_min: 1
+        k_step: ${datamodule.knn_step}
+        k_min_search: ${datamodule.knn_min_search}
+        overwrite: False
+    - transform: DataTo
+      params:
+        device: 'cuda'
+    - transform: AdjacencyGraph #
+      params:
+        k: ${datamodule.pcp_k_adjacency}
+        w: ${datamodule.pcp_w_adjacency}
+    - transform: ConnectIsolated
+      params:
+        k: 1
+    - transform: DataTo
+      params:
+        device: 'cpu'
+    - transform: AddKeysTo  # move some features to 'x' to be used for partition
+      params:
+        keys: ${datamodule.partition_hf}
+        to: 'x'
+        delete_after: False
+    - transform: CutPursuitPartition
+      params:
+        regularization: ${datamodule.pcp_regularization}
+        spatial_weight: ${datamodule.pcp_spatial_weight}
+        k_adjacency: ${datamodule.pcp_k_adjacency}
+        cutoff: ${datamodule.pcp_cutoff}
+        iterations: ${datamodule.pcp_iterations}
+        parallel: True
+        verbose: False
